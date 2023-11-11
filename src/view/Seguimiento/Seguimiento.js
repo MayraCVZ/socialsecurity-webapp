@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import Content from "../../components/Content";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Formulario from './SeguimientoForm';
-import Grid from './SeguimientoGrid';
+import Layout from "../../containers/Layout";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faListCheck } from "@fortawesome/free-solid-svg-icons";
 const Seguimiento = () => {
-    const [datosDelFormulario, setDatosDelFormulario] = useState([]);
     return (
-        <Content>
-            <h2>SEGUIMIENTO AL ASUNTO</h2>
-            <Formulario />
-            <Grid datosDelFormulario={datosDelFormulario} />
-        </Content>
+        <Layout>
+            <Content>
+                <div className="divSeparador">
+                    <h2>
+                        <FontAwesomeIcon icon={faListCheck} />
+                        &nbsp; SEGUIMIENTO AL ASUNTO
+                    </h2>
+                </div>
+                <Formulario />
+            </Content>
+        </Layout>
     );
 };
 export default Seguimiento;

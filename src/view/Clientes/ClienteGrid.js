@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Content from "../../components/Content";
 import axios from "axios";
 import ClienteService from "../../services/clienteService";
+//import { getData123 } from './ClienteForm';
+import ClienteForm from './ClienteForm'; // Importa el componente ClienteForm
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,13 +36,20 @@ const ClienteGrid = () => {
                 <TableCell component="th" scope="row">
                     {info.idCliente}
                 </TableCell>
-                <TableCell>{info.Nombre}</TableCell>
-                <TableCell>{info.apellidoPa}</TableCell>
+                <TableCell>{info.nomCliente + ' ' + info.apellidoPa + ' ' + info.apellidoMa}</TableCell>
+                <TableCell>{info.telefonoCasa}</TableCell>
+                <TableCell>{info.nss}</TableCell>
+                <TableCell>{info.curp}</TableCell>
                 <TableCell>
-                    <IconButton aria-label="editar">
-                        <a href={'clientes-edit/${info.idCliente}'}>
-                            <EditIcon color="primary" />
-                        </a>
+                    <IconButton
+                        aria-label="editar"
+                        onClick={async () => {
+                            // console.log("editar");
+                            await ClienteForm();
+                        }}
+                    >
+                        <EditIcon color="primary" />
+
                     </IconButton>
                 </TableCell>
                 <TableCell>
@@ -67,7 +76,9 @@ const ClienteGrid = () => {
                             <TableRow>
                                 <TableCell>No.</TableCell>
                                 <TableCell>Nombre</TableCell>
-                                <TableCell>Grupo</TableCell>
+                                <TableCell>Telefono</TableCell>
+                                <TableCell>NSS</TableCell>
+                                <TableCell>CURP</TableCell>
                                 <TableCell>Editar</TableCell>
                                 <TableCell>Borrar</TableCell>
                             </TableRow>

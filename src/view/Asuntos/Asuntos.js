@@ -1,17 +1,22 @@
 import React from "react";
 import Content from "../../components/Content";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Formulario from './AsuntosForm';
+import Layout from "../../containers/Layout";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBusinessTime } from "@fortawesome/free-solid-svg-icons";
 const Asuntos = () => {
     return (
-        <Content>
-            <h2>GESTION DE ASUNTOS</h2>
-            <Formulario />
-        </Content>
+        <Layout>
+            <Content>
+                <div className="divSeparador">
+                    <h2>
+                        <FontAwesomeIcon icon={faBusinessTime} />
+                        &nbsp;GESTION DE ASUNTOS
+                    </h2>
+                </div>
+                <Formulario />
+            </Content>
+        </Layout>
     );
 };
 export default Asuntos;

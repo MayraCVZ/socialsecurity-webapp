@@ -4,7 +4,6 @@ import "../styles/Footer.css";
 const Footer = () => {
     return (
         <footer className="scroll">
-            <h2>Copyright 2022</h2>
         </footer>
     );
 };

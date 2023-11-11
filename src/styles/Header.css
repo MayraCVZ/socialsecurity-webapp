@@ -10,7 +10,7 @@ body {
     justify-content: space-between;
     text-align: center;
     padding: 0 24px;
-    border-bottom: 10px solid orange;
+    border-bottom: 10px solid white;
     background-color: steelblue;
     color: white;
   }
@@ -39,10 +39,10 @@ body {
   .navbar-right ul li a {
     text-decoration: none;
     color: white;
-    border: 2px solid orange;
+    
     padding: 8px;
     border-radius: 6px;
-    font-size: 20px;
+    font-size: 16px;
     margin-right: 10px;
   }
   .navbar-left ul li a:hover,
@@ -50,9 +50,10 @@ body {
     background-color: white;
     color: orange;
   }
-  .navbar-email {
+  .navbar-email,
+  .navbar-logout {
     color: white;
-    margin-right: 50px;
+    margin-right: 15px;
   }
   .navbar-shopping-cart {
     position: relative;

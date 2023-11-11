@@ -1,8 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ClienteService from "../../services/clienteService";
+import Content from "../../components/Content";
+import axios from "axios";
+
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 //function ClienteForm() {
 const ClienteForm = () => {
+    const [idCliente, setIdCliente] = useState("");
     const [nomCliente, setNomCliente] = useState("");
     const [apellidoPa, setApellidoPa] = useState("");
     const [apellidoMa, setApellidoMa] = useState("");
@@ -85,11 +99,11 @@ const ClienteForm = () => {
             nomCliente: nomCliente,
             apellidoPa: apellidoPa,
             apellidoMa: apellidoMa,
-            fechaRegistro: fechaRegistro,
-            fechaNac: fechaNac,
+            fechaRegistro: new Date(fechaRegistro),
+            fechaNac: new Date(fechaNac),
             lugarNac: lugarNac,
             estadoCivil: estadoCivil,
-            nss: nss,
+            nss: parseInt(nss),
             curp: curp,
             rfc: rfc,
             estado: estado,
@@ -104,48 +118,131 @@ const ClienteForm = () => {
         };
         // const { data } = await axios.post(`${server}/clientes`, cliente);
         console.log(cliente);
-        ClienteService.createCliente(cliente);
+        if (idCliente === "") {
+            ClienteService.createCliente(cliente);
+        } else {
+            ClienteService.updateCliente(cliente, idCliente);
+        }
+    };
+    const handleReset = () => {
+        document.getElementById("myform").reset();
+    };
+    const setData = async (id) => {
+        const { data } = await axios.get('http://localhost:3000/clientes/' + id);
+        console.log(data);
+        setIdCliente(id);
+        setNomCliente(data.nomCliente);
+        setApellidoPa(data.apellidoPa);
+        setApellidoMa(data.apellidoMa);
+        setFechaRegistro(new Date(data.fechaRegistro).toISOString().slice(0, 10));
+        setFechaNac(new Date(data.fechaNac).toISOString().slice(0, 10));
+        setLugarNac(data.lugarNac);
+        setEstadoCivil(data.estadoCivil);
+        setNss(data.nss);
+        setCurp(data.curp);
+        setRfc(data.rfc);
+        setEstado(data.estado);
+        setCiudad(data.ciudad);
+        setColonia(data.colonia);
+        setCodigoPostal(data.codigoPostal);
+        setCalle(data.calle);
+        setNumero(data.numero);
+        setTelefonoCasa(data.telefonoCasa);
+        setCelular(data.celular);
+        setEmail(data.email);
     };
 
+    /*****************************/
+    const [cliente, setCliente] = useState([]);
+    const getData = async () => {
+        const { data } = await axios.get('http://localhost:3000/clientes');
+        console.log(data);
+        setCliente(data);
+    };
+    useEffect(() => {
+        getData();
+    }, []);
+    const DisplayData = cliente.map((info) => {
+        return (
+            <TableRow
+                key={info.idCliente}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+                <TableCell component="th" scope="row">
+                    {info.idCliente}
+                </TableCell>
+                <TableCell>{info.nomCliente + ' ' + info.apellidoPa + ' ' + info.apellidoMa}</TableCell>
+                <TableCell>{info.telefonoCasa}</TableCell>
+                <TableCell>{info.nss}</TableCell>
+                <TableCell>{info.curp}</TableCell>
+                <TableCell>
+                    <IconButton
+                        aria-label="editar"
+                        onClick={async () => {
+                            await setData(info.idCliente);
+                        }}
+                    >
+                        <EditIcon color="primary" />
+
+                    </IconButton>
+                </TableCell>
+                <TableCell>
+                    <IconButton
+                        aria-label="borrar"
+                        onClick={async () => {
+                            await ClienteService.deleteCliente(info.idCliente);
+                            await getData();
+                        }}
+                    >
+                        <DeleteIcon color="danger" />
+                    </IconButton>
+                </TableCell>
+            </TableRow>
+        );
+    });
+    /*****************************/
     return (
-        <form onSubmit={handleSubmit}>
-            <p>
-                <input type="submit" value="Guardar" />&nbsp;
-                <input type="submit" value="Borrar" />&nbsp;
-                <input type="reset" value="Limpiar" />&nbsp;
-            </p>
-            <h4>Información general</h4>
-            <div style={{ borderColor: 'red' }}></div>
-            <p >
+        <Content>
+            <form id="myform">
+                <p>
+                    <button onClick={handleSubmit}>Guardar</button>&nbsp;
+                    <button onClick={handleReset}>Limpiar</button>&nbsp;
+                </p>
+                <h4>Información general</h4>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Nombre</label>
-                    <input type="text" name="nombre" size="30" style={{ width: '250px' }} onChange={handleNomCliente} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Nombre</label>
+                    <input type="text" name="nombre" size="30" value={nomCliente}
+                        style={{ width: '250px' }} onChange={handleNomCliente} />&nbsp;
                 </div>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Apellido paterno</label>
-                    <input type="text" name="apellidoP" size="30" style={{ width: '250px' }} onChange={handleApellidoPa} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Apellido paterno</label>
+                    <input type="text" name="apellidoP" size="30" value={apellidoPa}
+                        style={{ width: '250px' }} onChange={handleApellidoPa} />&nbsp;
                 </div>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Apellido materno</label>
-                    <input type="text" name="apellidoA" size="30" style={{ width: '250px' }} onChange={handleApellidoMa} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Apellido materno</label>
+                    <input type="text" name="apellidoA" size="30" value={apellidoMa}
+                        style={{ width: '250px' }} onChange={handleApellidoMa} />&nbsp;
                 </div>
                 <div >
-                    <label style={{ display: 'block' }} for="name">Fecha registro</label>
-                    <input type="date" name="fechaRegistro" size="40" style={{ width: '250px' }} onChange={handleFechaRegistro} />
+                    <label style={{ display: 'block' }} htmlFor="name">Fecha registro</label>
+                    <input type="date" name="fechaRegistro" size="40" value={fechaRegistro}
+                        style={{ width: '250px' }} onChange={handleFechaRegistro} />
                 </div>
-            </p>
-            <p>
+                <h3 />
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Fecha nacimiento:</label>
-                    <input type="tedatext" name="fechaNacimiento" size="30" style={{ width: '250px' }} onChange={handleFechaNac} />&nbsp;
-                </div>
-                <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Lugar nacimiento:</label>
-                    <input type="text" name="lugarNacimiento" size="30" style={{ width: '250px' }} onChange={handleLugarNac} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Fecha nacimiento:</label>
+                    <input type="date" name="fechaNacimiento" size="30" value={fechaNac}
+                        style={{ width: '250px' }} onChange={handleFechaNac} />&nbsp;
                 </div>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Estado civil:</label>
-                    <select style={{ width: '260px' }} name="estadoCivil" id="estadoCivil" >
+                    <label style={{ display: 'block' }} htmlFor="name">Lugar nacimiento:</label>
+                    <input type="text" name="lugarNacimiento" size="30" value={lugarNac}
+                        style={{ width: '250px' }} onChange={handleLugarNac} />&nbsp;
+                </div>
+                <div style={{ float: 'left', marginRight: '20px' }}>
+                    <label style={{ display: 'block' }} htmlFor="name">Estado civil:</label>
+                    <select value={estadoCivil} onChange={handleEstadoCivil} style={{ width: '260px' }} name="estadoCivil" id="estadoCivil" >
                         <option value="0"></option>
                         <option value="S">Soltero</option>
                         <option value="C">Casado</option>
@@ -154,81 +251,100 @@ const ClienteForm = () => {
                     </select>&nbsp;
                 </div>
                 <div>
-                    <label style={{ display: 'block' }} for="name">Edad:</label>
-                    <input type="number" name="edad" size="30" min="50" max="200" />
+                    <label style={{ display: 'block' }} htmlFor="name">Edad:</label>
+                    <input type="number" name="edad" size="30" min="50" max="200"
+                        style={{ width: '100px' }} />
                 </div>
-            </p>
-            <p>
+                <h3 />
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">NSS:</label>
-                    <input type="number" name="nss" size="40" style={{ width: '250px' }} onChange={handleNss} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">NSS:</label>
+                    <input type="number" name="nss" size="40" value={nss}
+                        style={{ width: '250px' }} onChange={handleNss} />&nbsp;
                 </div>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">CURP:</label>
-                    <input type="text" name="curp" size="30" style={{ width: '250px' }} onChange={handleCurp} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">CURP:</label>
+                    <input type="text" name="curp" size="30" value={curp}
+                        style={{ width: '250px' }} onChange={handleCurp} />&nbsp;
                 </div>
                 <div >
-                    <label style={{ display: 'block' }} for="name">RFC:</label>
-                    <input type="text" name="rfc" size="30" style={{ width: '250px' }} onChange={handleRfc} />
+                    <label style={{ display: 'block' }} htmlFor="name">RFC:</label>
+                    <input type="text" name="rfc" size="30" value={rfc}
+                        style={{ width: '250px' }} onChange={handleRfc} />
                 </div>
-            </p>
-            <h4>Dirección</h4>
-            <p>
+                <h4>Dirección</h4>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Estado:</label>
-                    <select style={{ width: '260px' }} name="estado" id="estado">
+                    <label style={{ display: 'block' }} htmlFor="name">Estado:</label>
+                    <select value={estado} onChange={handleEstado} style={{ width: '260px' }} name="estado" id="estado">
                         <option value="0"></option>
-                        <option value="S">Michoacan</option>
-                        <option value="C">Jalisco</option>
-                        <option value="D">Colima</option>
-                        <option value="V">Gerrero</option>
+                        <option value="1">Michoacan</option>
+                        <option value="2">Jalisco</option>
+                        <option value="3">Colima</option>
+                        <option value="4">Gerrero</option>
                     </select>&nbsp;
                 </div>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Ciudad:</label>
-                    <input style={{ width: '250px' }} type="text" name="ciudad" size="30" onChange={handleCiudad} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Ciudad:</label>
+                    <input type="text" name="ciudad" size="30" value={ciudad}
+                        style={{ width: '250px' }} onChange={handleCiudad} />&nbsp;
                 </div>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Colonia:</label>
-                    <input style={{ width: '250px' }} type="text" name="colonia" size="30" onChange={handleColonia} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Colonia:</label>
+                    <input type="text" name="colonia" size="30" value={colonia}
+                        style={{ width: '250px' }} onChange={handleColonia} />&nbsp;
                 </div>
                 <div >
-                    <label style={{ display: 'block' }} for="name">Código postal:</label>
-                    <input style={{ width: '250px' }} type="text" name="cp" size="20" maxlength="5" onChange={handleCodigoPostal} />
+                    <label style={{ display: 'block' }} htmlFor="name">Código postal:</label>
+                    <input type="text" name="cp" size="20" value={codigoPostal}
+                        style={{ width: '250px' }} onChange={handleCodigoPostal} />
                 </div>
-            </p>
-            <p>
+                <h3 />
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Calle:</label>
-                    <input style={{ width: '250px' }} type="text" name="calle" size="30" onChange={handleCalle} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Calle:</label>
+                    <input type="text" name="calle" size="30" value={calle}
+                        style={{ width: '250px' }} onChange={handleCalle} />&nbsp;
                 </div>
                 <div >
-                    <label style={{ display: 'block' }} for="name">Numero:</label>
-                    <input style={{ width: '250px' }} type="number" name="numero" size="20" min="1" onChange={handleNumero} />
+                    <label style={{ display: 'block' }} htmlFor="name">Numero:</label>
+                    <input type="number" name="numero" size="20" min="1" value={numero}
+                        style={{ width: '250px' }} onChange={handleNumero} />
                 </div>
-            </p>
-            <h4>Datos de contacto</h4>
-            <p>
+                <h4>Datos de contacto</h4>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Teléfono Casa:</label>
-                    <input style={{ width: '250px' }} type="tel" name="telefono" size="30" onChange={handleTelefonoCasa} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Teléfono Casa:</label>
+                    <input type="tel" name="telefono" size="30" value={telefonoCasa}
+                        style={{ width: '250px' }} onChange={handleTelefonoCasa} />&nbsp;
                 </div>
                 <div style={{ float: 'left', marginRight: '20px' }}>
-                    <label style={{ display: 'block' }} for="name">Teléfono Celular :</label>
-                    <input style={{ width: '250px' }} type="tel" name="celular" size="30" onChange={handleCelular} />&nbsp;
+                    <label style={{ display: 'block' }} htmlFor="name">Teléfono Celular :</label>
+                    <input type="tel" name="celular" size="30" value={celular}
+                        style={{ width: '250px' }} onChange={handleCelular} />&nbsp;
                 </div>
                 <div >
-                    <label style={{ display: 'block' }} for="name">Email:</label>
-                    <input style={{ width: '250px' }} type="email" name="email" size="30" onChange={handleEmail} />
-                </div>
-            </p>
-            {/*
-            <input type="text" value={campo1} onChange={handleCampo1Change} />
-            <input type="text" value={campo2} onChange={handleCampo2Change} />
-            <button type="submit">Enviar</button>
-    */}
-        </form>
+                    <label style={{ display: 'block' }} htmlFor="name">Email:</label>
+                    <input type="email" name="email" size="30" value={email}
+                        style={{ width: '250px' }} onChange={handleEmail} />
+                </div >
+            </form>
+            <h3>Listado de clientes</h3>
+            <div >
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>No.</TableCell>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>Telefono</TableCell>
+                                <TableCell>NSS</TableCell>
+                                <TableCell>CURP</TableCell>
+                                <TableCell>Editar</TableCell>
+                                <TableCell>Borrar</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>{DisplayData}</TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+        </Content>
     );
 };
-
 export default ClienteForm;
