@@ -13,6 +13,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 //function ClienteForm() {
 const ClienteForm = () => {
@@ -36,6 +38,8 @@ const ClienteForm = () => {
     const [telefonoCasa, setTelefonoCasa] = useState("");
     const [celular, setCelular] = useState("");
     const [email, setEmail] = useState("");
+    const [optFiltro, setOptFiltro] = useState("");
+    const [filtro, setFiltro] = useState("");
 
     const handleNomCliente = (event) => {
         setNomCliente(event.target.value);
@@ -93,6 +97,13 @@ const ClienteForm = () => {
     };
     const handleEmail = (event) => {
         setEmail(event.target.value);
+    };
+    const handleOptFiltro = (event) => {
+        setOptFiltro(event.target.value);
+        setFiltro("");
+    };
+    const handleFiltro = (event) => {
+        setFiltro(event.target.value);
     };
     const handleSubmit = () => {
         let cliente = {
@@ -155,9 +166,17 @@ const ClienteForm = () => {
     /*****************************/
     const [cliente, setCliente] = useState([]);
     const getData = async () => {
-        const { data } = await axios.get('http://localhost:3000/clientes');
-        console.log(data);
-        setCliente(data);
+        if (optFiltro === "1") {
+            const { data } = await axios.get('http://localhost:3000/clientes/nss/' + filtro);
+            setCliente(data);
+        } else if (optFiltro === "2") {
+            const { data } = await axios.get('http://localhost:3000/clientes/curp/' + filtro);
+            setCliente(data);
+        }
+        else {
+            const { data } = await axios.get('http://localhost:3000/clientes');
+            setCliente(data);
+        }
     };
     useEffect(() => {
         getData();
@@ -326,6 +345,15 @@ const ClienteForm = () => {
                 </div >
             </form>
             <h3>Listado de clientes</h3>
+            <div style={{ float: 'right', marginRight: '20px' }}>
+                <select value={optFiltro} onChange={handleOptFiltro} style={{ width: '100px' }} name="optFiltro" id="optFiltro" >
+                    <option value="0"></option>
+                    <option value="1">NSS</option>
+                    <option value="2">CURP</option>
+                </select>&nbsp;
+                <input type="text" name="filtro" size="30" value={filtro} style={{ width: '250px' }} onChange={handleFiltro} />&nbsp;
+                <button onClick={getData}><FontAwesomeIcon icon={faSearch} /></button>&nbsp;
+            </div>
             <div >
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">

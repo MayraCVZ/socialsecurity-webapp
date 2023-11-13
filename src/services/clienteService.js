@@ -10,6 +10,12 @@ class ClienteService {
   getClienteById(clienteId) {
     return axios.get(CLIENTE_API_BASE_URL + "/" + clienteId);
   }
+  getClienteByNss(clienteNss) {
+    return axios.get(CLIENTE_API_BASE_URL + "/nss/" + clienteNss);
+  }
+  getClienteByCurp(clienteCurp) {
+    return axios.get(CLIENTE_API_BASE_URL + "/curp/" + clienteCurp);
+  }
   updateCliente(cliente, clienteId) {
     return axios.put(CLIENTE_API_BASE_URL + "/" + clienteId, cliente);
   }
