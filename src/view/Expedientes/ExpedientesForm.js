@@ -101,7 +101,6 @@ function ExpedientesForm() {
         var e = document.getElementById("cliente");
         //var text = e.option s[e.selectedIndex].text;
         var { data } = await ClienteService.getClienteById(parseInt(e.value));
-        //setIdCliente(e.value);
         setNss(data.nss);
         setCurp(data.curp);
         setRfc(data.rfc);
@@ -110,8 +109,7 @@ function ExpedientesForm() {
         setCelular(data.celular);
 
         data = await AsuntoService.getAsuntos();
-        setIdAsunto(data.data[0].idAsunto);
-
+        setIdAsunto("");
         setEjercicio("");
         setNumExpediente("");
         setTipoAsunto(0);
@@ -121,6 +119,7 @@ function ExpedientesForm() {
 
         for (var i = 0; i < data.data.length; i++) {
             if (data.data[i].idCliente == e.value) {
+                setIdAsunto(data.data[i].idAsunto);
                 setEjercicio(data.data[i].ejercicio);
                 setNumExpediente(data.data[i].numAsunto);
                 setTipoAsunto(data.data[i].tipoAsunto);
@@ -161,7 +160,7 @@ function ExpedientesForm() {
                     {info.documento}
                 </TableCell>
                 <TableCell>{info.perteneceA}</TableCell>
-                <TableCell>{info.fechaEntrega}</TableCell>
+                <TableCell>{new Date(info.fechaEntrega).toISOString().slice(0, 10)}</TableCell>
                 <TableCell>
                     <IconButton
                         aria-label="editar"
@@ -178,7 +177,7 @@ function ExpedientesForm() {
                         aria-label="borrar"
                         onClick={async () => {
                             await ExpedienteService.deleteExpediente(info.idExpediente);
-                            await getData(info.idExpediente);
+                            await getData(info.idAsunto);
                         }}
                     >
                         <DeleteIcon color="danger" />

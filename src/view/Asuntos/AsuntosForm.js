@@ -98,8 +98,8 @@ const AsuntosForm = () => {
         setCelular(data.celular);
 
         data = await AsuntoService.getAsuntos();
-        setIdAsunto(data.data[0].idAsunto);
 
+        setIdAsunto("");
         setEjercicio("");
         setNumExpediente("");
         setTipoAsunto(0);
@@ -110,6 +110,7 @@ const AsuntosForm = () => {
 
         for (var i = 0; i < data.data.length; i++) {
             if (data.data[i].idCliente == e.value) {
+                setIdAsunto(data.data[i].idAsunto);
                 setEjercicio(data.data[i].ejercicio);
                 setNumExpediente(data.data[i].numAsunto);
                 setTipoAsunto(data.data[i].tipoAsunto);

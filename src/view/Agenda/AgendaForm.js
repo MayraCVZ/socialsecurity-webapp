@@ -107,7 +107,6 @@ function AgendaForm() {
         var e = document.getElementById("cliente");
         //var text = e.option s[e.selectedIndex].text;
         var { data } = await ClienteService.getClienteById(parseInt(e.value));
-        setIdCliente(e.value);
         setNss(data.nss);
         setCurp(data.curp);
         setRfc(data.rfc);
@@ -115,6 +114,7 @@ function AgendaForm() {
         setCiudad(data.ciudad);
         setCelular(data.celular);
 
+        setIdAsunto("");
         setEjercicio("");
         setNumExpediente("");
         setTipoAsunto(0);
@@ -127,6 +127,7 @@ function AgendaForm() {
 
         for (var i = 0; i < data.data.length; i++) {
             if (data.data[i].idCliente == e.value) {
+                setIdAsunto(data.data[i].idAsunto);
                 setEjercicio(data.data[i].ejercicio);
                 setNumExpediente(data.data[i].numAsunto);
                 setTipoAsunto(data.data[i].tipoAsunto);
@@ -141,7 +142,7 @@ function AgendaForm() {
         const { data } = await AgendaService.getAgendaById(id);
         setIdAgenda(data.idAgenda);
         setFecha(new Date(data.fecha).toISOString().slice(0, 10));
-        setComentarios(data[0].comentarios);
+        setComentarios(data.comentarios);
         setHoraIni(data.hora);
         setTipoCita(data.tipoCita);
     };
@@ -182,7 +183,7 @@ function AgendaForm() {
                         aria-label="borrar"
                         onClick={async () => {
                             await AgendaService.deleteAgenda(info.idAgenda);
-                            await getData(info.idAgenda);
+                            await getData(info.idAsunto);
                         }}
                     >
                         <DeleteIcon color="danger" />

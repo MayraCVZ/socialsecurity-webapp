@@ -6,20 +6,18 @@
   border: 1px solid steelblue;
   padding: 100px;
   background-color: rgba(234, 238, 241, 0.7);
-  /* rgba(70, 130, 180, 0.7);  /* 0.7 representa la opacidad (ajusta según tus preferencias) */
+  /* rgba(70, 130, 180, 0.7);  /* 0.7 representa la opacidad*/
 }
 
 .containerSecundario {
   text-align: center;
 }
 .fondoLogin {
-  /* Establece la imagen de fondo utilizando la ruta relativa a tu imagen */
   background-image: url("../../public/images/loginBack.jpg");
-  /* Ajusta el tamaño y posición de la imagen de fondo según tus necesidades */
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-color: rgba(255, 255, 255, 0.2);
-  min-height: 750px;
+  min-height: 618px;
 }

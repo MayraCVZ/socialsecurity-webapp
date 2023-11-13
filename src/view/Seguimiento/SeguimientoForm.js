@@ -107,7 +107,6 @@ function SeguimientoForm() {
         var e = document.getElementById("cliente");
         //var text = e.option s[e.selectedIndex].text;
         var { data } = await ClienteService.getClienteById(parseInt(e.value));
-        setIdCliente(e.value);
         setNss(data.nss);
         setCurp(data.curp);
         setRfc(data.rfc);
@@ -115,6 +114,7 @@ function SeguimientoForm() {
         setCiudad(data.ciudad);
         setCelular(data.celular);
 
+        setIdAsunto("");
         setEjercicio("");
         setNumExpediente("");
         setTipoAsunto(0);
@@ -127,6 +127,7 @@ function SeguimientoForm() {
 
         for (var i = 0; i < data.data.length; i++) {
             if (data.data[i].idCliente == e.value) {
+                setIdAsunto(data.data[i].idAsunto);
                 setEjercicio(data.data[i].ejercicio);
                 setNumExpediente(data.data[i].numAsunto);
                 setTipoAsunto(data.data[i].tipoAsunto);
@@ -181,7 +182,7 @@ function SeguimientoForm() {
                         aria-label="borrar"
                         onClick={async () => {
                             await SeguimientoService.deleteSeguimiento(info.idSeguimiento);
-                            await getData(info.idSeguimiento);
+                            await getData(info.idAsunto);
                         }}
                     >
                         <DeleteIcon color="danger" />
